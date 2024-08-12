@@ -1,0 +1,29 @@
+[tool.mypy]
+python_version = '3.12'
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+exclude = [
+    '^.venv$'
+]
+
+[tool.flake8]
+# Check that this is aligned with your other tools like Black
+max-line-length = 200
+filename = [
+    'src/**/*.py',
+]
+
+[tool.black]
+line-length = 200
+
+[tool.bandit]
+exclude_dirs = [
+    'src/tests',
+]
+
+[tool.coverage.report]
+include_namespace_packages = false
+include = [
+    'src/**/*.py',
+]

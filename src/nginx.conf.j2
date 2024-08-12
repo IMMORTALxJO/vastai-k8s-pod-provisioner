@@ -1,0 +1,33 @@
+log_format logger-json escape=json '{'
+    '"address": "$remote_addr",'
+    '"http_x_forwarded_for": "$http_x_forwarded_for",'
+    '"host": "$http_host",'
+    '"upstream_addr": "$upstream_addr",'
+    '"source": "nginx",'
+    '"time": $msec,'
+    '"resp_body_size": $body_bytes_sent,'
+    '"request_length": $request_length,'
+    '"method": "$request_method",'
+    '"uri": "$request_uri",'
+    '"status": $status,'
+    '"user_agent": "$http_user_agent",'
+    '"resp_time": $request_time,'
+    '"upstream_cache_status": "$upstream_cache_status"'
+'}';
+
+server {
+    server_name _;
+    listen {{ listen_port }} default_server;
+
+    proxy_connect_timeout  600s;
+    proxy_send_timeout  600s;
+    proxy_read_timeout  600s;
+    client_max_body_size {{ max_body_size }};
+    client_body_buffer_size {{ max_body_size }};
+
+    location / {
+        proxy_pass http://{{ ip }}:{{ port }}$request_uri;
+    }
+    access_log /proc/1/fd/1 logger-json;
+    error_log /proc/1/fd/2;
+}

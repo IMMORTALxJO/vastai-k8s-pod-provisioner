@@ -1,0 +1,10 @@
+certifi==2024.7.4
+charset-normalizer==3.3.2
+idna==3.7
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+requests==2.32.3
+setuptools==72.1.0
+urllib3==2.2.2
+vastai==0.2.5
+wheel==0.44.0
