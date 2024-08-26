@@ -44,7 +44,7 @@ logging.info(f"Searching instance with label '{instance_label}' ...")
 instance = vast.getInstanceByLabel(instance_label)
 if instance:
     logging.info(instance)
-    if instance.image != template_image or instance.template_hash_id != template.id:
+    if instance.image != template_image or instance.template_hash_id != template.id or instance.status == "offline":
         logging.info("Destroying instance...")
         instance.destroy()
         instance = None
