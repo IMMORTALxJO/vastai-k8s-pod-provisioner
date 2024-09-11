@@ -34,7 +34,7 @@ class VastController:
         offers = self.get("/api/v0/bundles/", params={"q": json.dumps({**search_query, **{"disk_space": {"gte": template.disk_space}, "allocated_storage": template.disk_space}})})["offers"]
         offer_id = offers[0]["id"]
         self.__logger.info(f"Best offer is {offer_id}, creating instance ...")
-        result = self.put(f"/api/v0/asks/{offer_id}/", {"image_login": docker_login, "image": image, "template_hash_id": template.id, "label": label})
+        result = self.put(f"/api/v0/asks/{offer_id}/", {"client_id": "me", "image_login": docker_login, "image": image, "template_hash_id": template.id, "label": label})
         if "success" not in result or not result["success"]:
             logging.error(result)
             raise Exception("Instance creation request is not succeed")
