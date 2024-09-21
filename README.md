@@ -54,5 +54,5 @@ You can configure the application via environment variables:
 | BLACKLIST_ENABLED           | FALSE    | false                          | Enable blacklist logic                                                   |
 | BLACKLIST_REDIS_URL         | FALSE    | redis://redis:6379/10          | Redis to be used as blacklist storage                                    |
 | BLACKLIST_BAN_AFTER_SECONDS | FALSE    | 1200 (20 minutes)              | Waiting duration before instance marked as banned                        |
-| BLACKLIST_BAN_TTL_SECONDS   | FALSE    | 604800 ( 7 days)               | Host ban duration                                                        |
+| BLACKLIST_BAN_TTL_SECONDS   | FALSE    | 604800 (7 days)                | Host ban duration                                                        |
 | DEBUG                       | FALSE    | false                          | Enable debug logs                                                        |
