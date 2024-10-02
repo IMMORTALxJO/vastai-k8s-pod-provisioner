@@ -32,8 +32,8 @@ if instance:
         destroy_reason = "instance has wrong image"
     elif instance.template_hash_id != template.id:
         destroy_reason = "instance has wrong template"
-    elif instance.status == "offline":
-        destroy_reason = "instance is Offline"
+    elif instance.status in ["offline", "exited"]:
+        destroy_reason = f"instance is {instance.status}"
     elif blacklist and blacklist.isBanned(instance.hostId):
         destroy_reason = "instance host is banned"
     if destroy_reason:
