@@ -55,4 +55,6 @@ You can configure the application via environment variables:
 | BLACKLIST_REDIS_URL         | FALSE    | redis://redis:6379/10          | Redis to be used as blacklist storage                                    |
 | BLACKLIST_BAN_AFTER_SECONDS | FALSE    | 1200 (20 minutes)              | Waiting duration before instance marked as banned                        |
 | BLACKLIST_BAN_TTL_SECONDS   | FALSE    | 604800 (7 days)                | Host ban duration                                                        |
+| BLACKLIST_RESTART_TTL_SECONDS | FALSE  | 3600 (1 hour)                  | Flush pod restarts counter if no restarts for that time duration         |
+| BLACKLIST_RESTART_THRESHOLD | FALSE    | 5                              | Ban host if pod has this many restarts restarts within BLACKLIST_RESTART_TTL_SECONDS |
 | DEBUG                       | FALSE    | false                          | Enable debug logs                                                        |

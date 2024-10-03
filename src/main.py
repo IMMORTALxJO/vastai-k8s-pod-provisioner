@@ -36,9 +36,15 @@ if instance:
         destroy_reason = f"instance is {instance.status}"
     elif blacklist and blacklist.isBanned(instance.hostId):
         destroy_reason = "instance host is banned"
+    elif blacklist and blacklist.getAndIncreaseInstanceRestarts(instance.id) > Settings.blacklist_restart_threshold:
+        logging.info("Too many pod restarts, instance host will be banned for some time...")
+        blacklist.add(instance.hostId, reason="restarts")
+        destroy_reason = "too many pod restarts"
     if destroy_reason:
         logging.info(f"Destroying instance, {destroy_reason}...")
         instance.destroy()
+        if blacklist:
+            blacklist.cleanInstanceKeys(instance.id)
         instance = None
     else:
         logging.info("Instance image and template are up-to-date")
@@ -52,25 +58,31 @@ if not instance:
         docker_login=Settings.docker_login,
         search_query=Settings.vast_search_query,
         image=Settings.template_image,
-        blacklist_host_ids=blacklist.get() if blacklist else [],
+        blacklist_host_ids=blacklist.list() if blacklist else [],
     )
 
 # wait for instance become online
-wait_start_time = time.time()
+wait_start_time = 0
 while True:
     instance = vast.getInstanceByLabel(instance_label)
     if not instance:
         raise Exception("Instance not found")
+    if not wait_start_time:
+        wait_start_time = blacklist.getInstanceStartTime(instance.id) if blacklist else int(time.time())
     logging.info(instance)
     if instance and instance.status == "running" and instance.port > 0:
+        if blacklist:
+            blacklist.delInstanceStartTime(instance.id)
         break
-    if blacklist and time.time() - wait_start_time > Settings.blacklist_ban_after_seconds:
+    wait_time = time.time() - wait_start_time
+    if blacklist and wait_time > Settings.blacklist_ban_after_seconds:
         logging.info("Too long waiting, instance host will be banned for some time...")
         blacklist.add(instance.hostId)
         instance.destroy()
         raise Exception(f"Host {instance.hostId} marked as banned due to long startup waiting")
-    logging.info("Waiting for instance become online ...")
+    logging.info(f"Waiting for instance become online ({wait_time} seconds) ...")
     time.sleep(10)
+
 logging.info("Instance is ready to accept connections")
 
 # generate nginx config

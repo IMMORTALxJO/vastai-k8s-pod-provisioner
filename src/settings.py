@@ -26,3 +26,5 @@ class Settings:
     blacklist_redis = getenv("BLACKLIST_REDIS", "redis://redis:6379/10")
     blacklist_ban_ttl_seconds = int(getenv("BLACKLIST_BAN_TTL_SECONDS", str(24 * 60 * 60)))
     blacklist_ban_after_seconds = int(getenv("BLACKLIST_BAN_AFTER_SECONDS", str(20 * 60 * 60)))
+    blacklist_restart_ttl_seconds = int(getenv("BLACKLIST_RESTART_TTL_SECONDS", str(60 * 60)))
+    blacklist_restart_threshold = int(getenv("BLACKLIST_RESTART_THRESHOLD", "5"))
