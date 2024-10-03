@@ -74,7 +74,7 @@ while True:
         if blacklist:
             blacklist.delInstanceStartTime(instance.id)
         break
-    wait_time = time.time() - wait_start_time
+    wait_time = int(time.time()) - wait_start_time
     if blacklist and wait_time > Settings.blacklist_ban_after_seconds:
         logging.info("Too long waiting, instance host will be banned for some time...")
         blacklist.add(instance.hostId)
