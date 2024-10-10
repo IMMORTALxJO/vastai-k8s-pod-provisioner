@@ -39,6 +39,10 @@ class VastInstance:
     def image(self) -> str:
         return str(self.__raw_template["image_uuid"])
 
+    @property
+    def hostId(self) -> str:
+        return str(self.__raw_template["host_id"])
+
     def destroy(self):
         result = self.__vast.delete(f"/api/v0/instances/{self.id}/")
         if "success" not in result or not result["success"]:
@@ -48,6 +52,6 @@ class VastInstance:
 
     def __str__(self):
         s = [f"Instance {self.id}"]
-        for t in ["image_uuid", "template_hash_id", "cpu_name", "cpu_cores", "actual_status", "status_msg", "public_ipaddr", "direct_port_start"]:
+        for t in ["image_uuid", "host_id", "template_hash_id", "cpu_name", "cpu_cores", "actual_status", "status_msg", "public_ipaddr", "direct_port_start"]:
             s.append("\t%s = %s" % (t, self.__raw_template[t]))
         return "\n".join(s)
