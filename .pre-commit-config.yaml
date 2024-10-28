@@ -30,4 +30,4 @@ repos:
     rev: 'v1.8.0'
     hooks:
     -   id: mypy
-        additional_dependencies: [types-retry==0.9.9.4, types-requests==2.31.0.20240403]
+        additional_dependencies: [types-retry==0.9.9.4, types-requests==2.31.0.20240403, types-redis==4.6.0.20240903]

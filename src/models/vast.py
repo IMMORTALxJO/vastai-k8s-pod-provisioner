@@ -30,11 +30,20 @@ class VastController:
                 return VastInstance(instance, self)
         return None
 
-    def createInstance(self, template: VastTemplate, label: str, docker_login: str, search_query: dict, image: str):
-        offers = self.get("/api/v0/bundles/", params={"q": json.dumps({**search_query, **{"disk_space": {"gte": template.disk_space}, "allocated_storage": template.disk_space}})})["offers"]
-        offer_id = offers[0]["id"]
-        self.__logger.info(f"Best offer is {offer_id}, creating instance ...")
-        result = self.put(f"/api/v0/asks/{offer_id}/", {"client_id": "me", "image_login": docker_login, "image": image, "template_hash_id": template.id, "label": label})
+    def createInstance(self, template: VastTemplate, label: str, docker_login: str, search_query: dict, image: str, blacklist_host_ids: list[str] = []):
+        self.__logger.info(f"Creating instance, blacklist_host_ids={blacklist_host_ids}")
+        best_offer = None
+        for offer in self.get("/api/v0/bundles/", params={"q": json.dumps({**search_query, **{"disk_space": {"gte": template.disk_space}, "allocated_storage": template.disk_space}})})["offers"]:
+            if str(offer["host_id"]) in blacklist_host_ids:
+                self.__logger.info(f"Offer {offer['id']} skipped, host {offer['host_id']} in blacklist")
+                continue
+            best_offer = offer
+            break
+        if not best_offer:
+            raise Exception("Offer not found")
+        self.__logger.info(f"Found offer is {best_offer['id']}, creating instance ...")
+        self.__logger.debug(f"Offer: {best_offer}")
+        result = self.put(f"/api/v0/asks/{best_offer['id']}/", {"client_id": "me", "image_login": docker_login, "image": image, "template_hash_id": template.id, "label": label})
         if "success" not in result or not result["success"]:
             logging.error(result)
             raise Exception("Instance creation request is not succeed")
